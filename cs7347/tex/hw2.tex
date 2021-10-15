@@ -1,0 +1,207 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+
+\begin{document}
+CS6041 HW2, Noah Gardner, 000843905\newline
+
+\section{Assignment 2}
+
+\begin{enumerate}
+    \item You are given sample documents with corresponding classes. Documents
+          are annotated as A, or B. These documents are splitted as training and
+          testing set shown in the below table. Assign the most probable class
+          to the test sentence given below using naïve bayes classification
+          approach. Please mention each step clearly (i.e., prior probability,
+          conditional probability, etc.). \textbf{[Points 25]}
+          \begin{equation}
+              P(c|X) = \frac{P(X|c)P(c)}{P(X)}
+          \end{equation}
+          \begin{figure}[ht]
+              \centering
+              \begin{tabular}{|l|l|}
+                  \hline\hline
+                  $c (prior)$        & $P(c)$                              \\
+                  \hline
+                  $A$                & $P(A) = 8/11 = 0.72$                \\
+                  $B$                & $P(B) = 3/11 = 0.27$                \\
+                  \hline\hline
+                  $x (predictor)$    & $P(X)$                              \\
+                  \hline
+                  $Chinese$          & $P(Chinese) = 6/11 = 0.55$          \\
+                  $Japan$            & $P(Japan) = 1/11 = 0.27$            \\
+                  $Tokyo$            & $P(Tokyo) = 1/11 = 0.27$            \\
+                  \hline\hline
+                  $X|c (likelihood)$ & $P(X|c)$                            \\
+                  \hline
+                  $Chinese|A$        & $P(Chinese|A) = 1/3 = 0.33$         \\
+                  $Japan|A$          & $P(Japan|A) = 1/3 = 0.33$           \\
+                  $Tokyo|A$          & $P(Tokyo|A) = 1/3 = 0.33$           \\
+                  \hline
+                  $Chinese|B$        & $P(Chinese|B) = 5/8 = 0.625$        \\
+                  $Japan|B$          & $P(Japan|B) = 0/8 = 0.0$            \\
+                  $Tokyo|B$          & $P(Tokyo|B) = 0/8 = 0.0$            \\
+                  \hline\hline
+                  $probability$      & $P(c|X)$                            \\
+                  \hline
+                  $A|Chinese$        & $(0.33) * (0.72) / (0.55) = 0.432$  \\
+                  $A|Japan$          & $(0.33) * (0.72) / (0.27) = 0.88$   \\
+                  $A|Tokyo$          & $(0.33) * (0.72) / (0.27) = 0.88$   \\
+                  \hline
+                  $B|Chinese$        & $(0.625) * (0.27) / (0.55) = 0.307$ \\
+                  $B|Japan$          & $(0.0) * (0.27) / (0.27) = 0.0$     \\
+                  $B|Tokyo$          & $(0.0) * (0.27) / (0.27) = 0.0$     \\
+                  \hline\hline
+              \end{tabular}
+              \caption{Naive Bayes Classification calculations based on input training set.}
+          \end{figure}
+          \begin{description}
+              \item[Answer] Since there are no instances of $Japan$ or $Tokyo$
+                  in the training set for class $B$, the output of the model
+                  will necessarily be $0\%$ for class $B$. Therefore, the class
+                  of the input text will be classified as $A$.
+
+                  There exist some methods that can handle the problem of $0\%$
+                  likelihood for Naive Bayes classifiers. One such method is to
+                  ignore any words that did not appear in the training set. If
+                  this method is applied to the input text, the probability of
+                  each class is calculated as follows:
+
+                  \begin{equation}
+                      P(A|'test') = P(A|Chinese)^3 * P(A|Japan) * P(A|Tokyo)
+                  \end{equation}
+                  \begin{equation*}
+                      = 0.432^3 * 0.88 * 0.88 = 0.0624
+                  \end{equation*}
+
+                  \begin{equation}
+                      P(B|'test') = P(B|Chinese)^3
+                  \end{equation}
+                  \begin{equation*}
+                      = 0.307^3 = 0.0289
+                  \end{equation*}
+
+                  The probability that the test text is higher in class $A$ than
+                  in class $B$. Therefore, the class of the input text will be
+                  classified as $A$.
+          \end{description}
+    \item What is cross-validation? Would you please give an example and explain
+          how cross-validation work? When to use cross-validation during an
+          experiment? \textbf{[Points 15]}
+          \begin{description}
+              \item[Answer] Cross-validation is a technique that splits the data
+                  into different sections (or \textit{folds}) and tests the
+                  algorithm on each fold. This method allows one to prevent
+                  overfitting by using different data for each training set.
+                  Then, after training the algorithm once on each fold, the
+                  models are compared to see which one performs better or can
+                  also be average to evaluate the performance of the algorithm.
+
+                  An example of cross-validation is \textit{k-fold
+                      cross-validation}. For example, if examine an algorithm
+                  using $2$-fold cross-validation, we would split the
+                  dataset into the training and testing sets. Then, we would
+                  split the training set into two folds. We would train the
+                  algorihtm twice (once on each fold) and use the fold that
+                  wasn't used for training for testing or validation.
+          \end{description}
+    \item Explain how gradient descent algorithm works? Please explain the
+          effect of learning rate on the learning algorithm while updating
+          parameters using the following equations. Please show differences
+          among different types of gradient descent – mini-batch, batch, and
+          stochastic gradient descent. \textbf{[Points 15]}
+          \begin{equation}
+              \textbf{w}^{(t+1)} = \textbf{w}^{(t)} - \eta\frac{d}{dw}f(x,\textbf{w})
+          \end{equation}
+
+          \begin{description}
+              \item[Answer] The goal of the gradient descent algorithm is to
+                  find a valley in the function. It is often compared to
+                  climbing down a mountain. If one was climbing down a mountain,
+                  they would not want to climb past the lowest point. Instead,
+                  their goal would be to move as much as possible towards the
+                  bottom (to reach the bottom as soon as possible), without
+                  overshooting (which would require the climber to climb back
+                  down).
+
+                  The 'rate' at which our climber climbs down the mountain is
+                  similar to the learning rate ($\eta$) in the gradient descent
+                  algorithm. We can increase the learning rate to make it to the
+                  bottom of the expression (\textit{minima}, a possible solution
+                  for the equation). $ \textbf{w}^{(t)}$ represents the current
+                  value of the parameter and $ \textbf{w}^{(t+1)}$ represents
+                  the new value of the parameter after the next update step. The
+                  parameter $\frac{d}{dw}f(x,\textbf{w})$ is the derivative of
+                  the function $f(x,\textbf{w})$ with respect to the parameter
+                  $w$, which gives us the slope of loss at the current point.
+
+                  There are different methods for applying the gradient descent
+                  algorithm, including mini-batch, batch, and stochastic
+                  gradient descent. Sotchastic gradient descent is an iterative
+                  method which updates the gradient at each step. The batch
+                  gradient descent is a method that updates the gradient at the
+                  end of each epoch by using a \textit{batch} of the data
+                  (usually the whole dataset). Mini-batch gradient descent is a
+                  method that is derived from batch gradient descent and uses
+                  smaller batches of data to update the gradient in fewer steps
+                  than stochastic gradient descent but more steps than batch
+                  gradient descent.
+          \end{description}
+
+    \item You are given the following text documents. Please answer the
+          following questions. \textbf{[Points 45]}
+          \begin{description}
+              \item \textbf{Text:}
+              \item It is going to rain today.
+              \item Today I am not going outside.
+              \item NLP is an interesting topic.
+              \item NLP includes ML, DL topics too.
+              \item I am going to complete NLP homework, today.
+          \end{description}
+
+          \begin{enumerate}
+              \item Would you please calculate the TF-IDF vector for each of the
+                    tokens? Please show each step (i.e., tokenization,
+                    vocabulary, TF, IDF, etc.). \textbf{[Points 15]}
+                    \begin{description}
+                        \item Answer:
+                        \item[Step 1:] Split into tokens, remove punctuation,
+                            and set tokens to lower-case.
+                        \item \verb/[['it', 'is', 'going', 'to', 'rain', 'today'],/
+                        \item \verb/['today', 'i', 'am', 'not', 'going', 'outside'],/
+                        \item \verb/['nlp', 'is', 'an', 'interesting', 'topic'],/
+                        \item \verb/['nlp', 'includes', 'ml', 'dl', 'topics', 'too'],/
+                        \item \verb/['i', 'am', 'not', 'going', 'to', 'play', 'football', 'today']]/
+                        \item[Step 2:] Create a vocabulary from the tokens (I
+                            use a sorted vocabulary here).
+                        \item \verb/['am', 'an', 'dl', 'football', 'going', 'i', /
+                        \item \verb/'includes', 'interesting', 'is', 'it', 'ml',/
+                        \item \verb/'nlp', 'not', 'outside', 'play', 'rain', 'to',/
+                        \item \verb/'today', 'too', 'topic', 'topics']/
+                        \item[Step 3:] Create a TF vector for each token.
+                    \end{description}
+
+                    \begin{figure}
+                        \include{assets/hw2/tf_idf.tex}
+                    \end{figure}
+
+              \item  Please calculate term-term co-occurrence matrix with a
+                    given context window ±3. \textbf{[Points 15]}
+              \item Please find the most similar words ( a pair of words) from
+                    their vector representations for both TF-IDF and
+                    co-occurrence matrix based vector representation cases. To
+                    compute most similarity score, you may use cosine similarity
+                    score. Show details similarity calculation for both cases –
+                    (a) TF-IDF and (b) co-occurrences-based representations.
+                    \textbf{[Points 15]}
+          \end{enumerate}
+
+
+
+
+
+\end{enumerate}
+\section{Appendix}
+\end{document}

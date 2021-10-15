@@ -1,0 +1,12 @@
+*
+!.gitignore
+!*.tex
+!*.pdf
+
+# assets
+!assets
+!assets/*
+!assets/**/*.tex
+!assets/**/*.dot
+!assets/**/*.png
+!assets/**/*.jpg

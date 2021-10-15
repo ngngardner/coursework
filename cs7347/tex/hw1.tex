@@ -1,0 +1,218 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+
+\begin{document}
+CS6041 HW1, Noah Gardner, 000843905\newline
+
+\section{Assignment 1}
+
+\begin{enumerate}
+    \item Please write regular expressions for the following. Points [20]
+          \begin{enumerate}
+              \item All binary strings.
+                    \begin{description}
+                        \item[Examples:] $1001$, $1011$, $1111$
+                        \item[Answer: ] \verb/^[01]+$/
+                    \end{description}
+              \item The email address contains only letters, @, and
+                    $\backslash$. Symbols (both lower and upper cases).
+                    \begin{description}
+                        \item[Examples:] alice@gmail.com, bob@yahoo.com
+                        \item[Answer: ]
+                            \verb/^[a-zA-Z0-9]+[@][a-zA-Z0-9]+\.[a-zA-Z0-9]+$/
+                    \end{description}
+              \item Valid integer numbers.
+                    \begin{description}
+                        \item[Examples:] 1, 12843, -89232, +1262
+                        \item[Answer: ] \verb/^[-+]?[0-9]+$/
+                    \end{description}
+              \item Valid phone numbers that contain ten (10) digits.
+                    \begin{description}
+                        \item[Formats:] xxx-xxx-xxxx, (xxx) xxx-xxxx
+                        \item[Examples:] 453-126-4570, (453) 126-4560
+                        \item[Answer: ]
+                            \verb/^\([0-9]{3}\)[0-9]{3}-[0-9]{4}$|^[0-9]{3}-[0-9]{3}-[0-9]{4}$/
+                    \end{description}
+          \end{enumerate}
+
+    \item Determine the number of tokens and vocabulary, and types from the
+          below text. Please list them in your answer too. [Points 5]
+          \begin{description}
+              \item[Text:] "The quick brown fox jumps over the lazy dog."
+              \item[Answer:] Tokenization
+                  \begin{description}
+                      \item[Tokens: ] \verb/"The"/ \verb/"quick"/ \verb/"brown"/
+                          \verb/"fox"/ \verb/"jumps"/ \verb/"over"/ \verb/"the"/
+                          \verb/"lazy"/ \verb/"dog"/
+                      \item[Number of tokens:] 9
+                      \item[Vocabulary: ] \verb/"the"/ \verb/"quick"/
+                          \verb/"brown"/ \verb/"fox"/ \verb/"jumps"/ \verb/"over"/
+                          \verb/"lazy"/ \verb/"dog"/
+                      \item[Types: ] 8
+                  \end{description}
+          \end{description}
+
+    \item Write down all the steps of text normalization and give an example for
+          each step. [Points 5]
+          \begin{description}
+              \item[Answer:] Steps of text normalization
+                  \begin{enumerate}
+                      \item[1.] Segmenting or tokenizing the text.
+                          \begin{description}
+                              \item[Example:] "The dog eats." $\to$ \verb/["The", "dog", "eats"]/
+                          \end{description}
+                      \item[2.] Normalizing word formats.
+                          \begin{description}
+                              \item[Example:] Contractions are replaced with
+                                  seperate tokens. $\textbf{we're} \to
+                                      \textbf{we}, \textbf{are}$
+                          \end{description}
+                      \item[3.] Segmenting sentences from the text.
+                          \begin{description}
+                              \item[Example:] "The dog eats. The cat sleeps."
+                                  $\to$ \verb/[["The", "dog", "eats"]/
+                                  \verb/, ["The", "cat", "sleeps"]]/
+                          \end{description}
+                  \end{enumerate}
+          \end{description}
+
+    \item We know how to compute similarity distance between two given strings
+          using the edit distance algorithm. [Points 25]
+          \begin{enumerate}
+              \item Please write down the distance matrix for the following
+                    strings. Consider space $" "$ as a single character. [Points
+                            15]
+                    \begin{description}
+                        \item[String 1:] Spokesman confirms
+                        \item[String 2:] Spokeswoman said
+                        \item[Answer:] See Table \ref{table:edit_dist} in the
+                            appendix.
+                    \end{description}
+
+              \item List down all the operations you need to perform. Please
+                    show backtracing matrix to validate your answer for the
+                    above example strings. [Points 10]
+                    \begin{description}
+                        \item[Answer:] See Tables \ref{table:edit_dist_bt_left}
+                            and \ref{table:edit_dist_bt_right} in the appendix.
+                            \begin{description}
+                                \item \textbf{Edits}
+                                \item[0.] \verb/Spokes/ matches, no move.
+                                \item[1.] Insert \verb/w/ (Cost 1)
+                                \item[2.] Insert \verb/o/ (Cost 1). \verb/man(space)/ matches, no move.
+                                \item[4.] Replace \verb/c/ with \verb/s/ (Cost 2).
+                                \item[6.] Replace \verb/o/ with \verb/a/ (Cost 2).
+                                \item[8.] Replace \verb/i/ with \verb/n/ (Cost 2).
+                                \item[9.] Delete \verb/f/ (Cost 1). \verb/i/ matches, no move.
+                                \item[11.] Replace \verb/r/ with \verb/(space)/ (Cost 2).
+                                \item[13.] Replace \verb/m/ with \verb/(space)/ (Cost 2).
+                                \item[14.] Delete \verb/s/ (Cost 1).
+                            \end{description}
+                    \end{description}
+          \end{enumerate}
+
+    \item Please formulate your language model for the following text. Show the
+          details of your LM formulation. [Points 25]
+          \begin{description}
+              \item[Text:] "The day was grey and bitter cold, and the dogs would
+                  not take the scent. The big black bitch had taken one sniff at
+                  the bear tracks, backed off, and skulked back to the pack with
+                  her tail between her legs."
+                  \begin{enumerate}
+                      \item Unigram model [Points 10]
+                            \begin{description}
+                                \item[Answer:] Unigram Model
+                                    \begin{enumerate}
+                                        \item[p(and) =] $3/41$
+                                        \item[p(at) =] $1/41$
+                                        \item[p(back) =] $1/41$
+                                        \item[p(backed) =] $1/41$
+                                        \item[p(bear) =] $1/41$
+                                        \item[p(between) =] $1/41$
+                                        \item[p(big) =] $1/41$
+                                        \item[p(bitch) =] $1/41$
+                                        \item[p(bitter) =] $1/41$
+                                        \item[p(black) =] $1/41$
+                                        \item[p(cold) =] $1/41$
+                                        \item[p(day) =] $1/41$
+                                        \item[p(dogs) =] $1/41$
+                                        \item[p(grey) =] $1/41$
+                                        \item[p(had) =] $1/41$
+                                        \item[p(her) =] $2/41$
+                                        \item[p(legs) =] $1/41$
+                                        \item[p(not) =] $1/41$
+                                        \item[p(off) =] $1/41$
+                                        \item[p(one) =] $1/41$
+                                        \item[p(pack) =] $1/41$
+                                        \item[p(scent) =] $1/41$
+                                        \item[p(skulked) =] $1/41$
+                                        \item[p(sniff) =] $1/41$
+                                        \item[p(tail) =] $1/41$
+                                        \item[p(take) =] $1/41$
+                                        \item[p(taken) =] $1/41$
+                                        \item[p(the) =] $6/41$
+                                        \item[p(to) =] $1/41$
+                                        \item[p(tracks) =] $1/41$
+                                        \item[p(was) =] $1/41$
+                                        \item[p(with) =] $1/41$
+                                        \item[p(would) =] $1/41$
+                                    \end{enumerate}
+                            \end{description}
+                      \item Bigram model [Points 15]
+                            \begin{description}
+                                \item[Answer:] Bigram Model (token pairs with
+                                    0.0 and 1.0 probability omitted)
+                                    \begin{enumerate}
+                                        \item[p(bear$|$the) =] $1/6$
+                                        \item[p(big$|$the) =] $1/6$
+                                        \item[p(bitter$|$and) =] $1/3$
+                                        \item[p(day$|$the) =] $1/6$
+                                        \item[p(dogs$|$the) =] $1/6$
+                                        \item[p(legs$|$her) =] $1/2$
+                                        \item[p(pack$|$the) =] $1/6$
+                                        \item[p(scent$|$the) =] $1/6$
+                                        \item[p(skulked$|$and) =] $1/3$
+                                        \item[p(tail$|$her) =] $1/2$
+                                        \item[p(the$|$and) =] $1/3$
+                                    \end{enumerate}
+                            \end{description}
+                  \end{enumerate}
+          \end{description}
+
+    \item You are given a training set of 30 numbers that consists of 21 zeros
+          and 1 each of the other digits 1-9. Now we see the following test set:
+          0 0 0 0 0 3 0 0 0 0. What is the unigram perplexity? [Points 20]
+          \begin{description}
+              \item \textbf{Answer:}
+                    \begin{enumerate}
+                        \item [P(0) =] $21/30$
+                        \item [P(3) =] $1/30$
+                        \item [Perplexity]
+                              \begin{equation}
+                                  PP(W) = (P(0)^9 * P(3)^1)^{-1/10} = ((21/30)^9 * (1/30))^{-1/10} = 1.93
+                              \end{equation}
+                    \end{enumerate}
+          \end{description}
+\end{enumerate}
+
+\section{Appendix}
+\begin{table}[h]
+    \caption{4a. Distance Matrix}
+    \include{assets/hw1/edit_dist.tex}
+    \label{table:edit_dist}
+\end{table}
+\begin{table}[h]
+    \caption{4b. Backtracing Distance Matrix (Part 1)}
+    \include{assets/hw1/edit_dist_bt_left.tex}
+    \label{table:edit_dist_bt_left}
+\end{table}
+\begin{table}[h]
+    \caption{4b. Backtracing Distance Matrix (Part 2)}
+    \include{assets/hw1/edit_dist_bt_right.tex}
+    \label{table:edit_dist_bt_right}
+\end{table}
+
+\end{document}
