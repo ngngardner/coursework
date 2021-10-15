@@ -1,0 +1,157 @@
+#include "bst.h"
+#include <string>
+#include <iostream>
+
+template <class T>
+binary_tree_node<T> *binary_search_tree<T>::search(const T &key) const {
+    binary_tree_node<T> *p = root;
+    while(p != NULL && p->data() != key) {
+        if(key < p->data())
+            p = p->left();
+        else
+            p = p->right();
+    }
+}
+
+/**
+    * Add the item to this binary search tree as long as it
+    * is not already present.
+    * Return false if item is already  in the tree.
+    * Return true if item is actually added to the tree.
+    */
+template <class T>
+bool binary_search_tree<T>::insert(const T &item) {
+    binary_tree_node<T>* nn = new binary_tree_node<T>(item);
+    if(root == NULL) {
+        root = nn;
+    } else {
+        // look for node, stop if 'falling off the end'
+        binary_tree_node<T> *p = root;
+        binary_tree_node<T> *q;
+        while(p != NULL && p->data() != item) {
+            q = p;
+            if(item < p->data())
+                p = p->left();
+            else
+                p = p->right();
+
+        }
+        if(p != NULL) {
+            return false;
+        } else {
+            if(item < q->data())
+                q->set_left(nn);
+            else
+                q->set_right(nn);
+            return true;
+        }
+    }
+}
+
+
+template <class T>
+binary_search_tree<T>::~binary_search_tree() {
+    tree_clear(root);
+}
+
+
+
+/**
+ * return the depth of the tree if the tree is balanced.
+ * Return -2 if not. Return -1 if it is an empty tree.
+ */
+template <class T>
+int check_balanced(binary_tree_node<T> *root) {
+    if(root == NULL)
+        return  -1;
+    else {
+        int ibl = check_balanced(root->left());
+        if(ibl == -2)
+            return -2;
+        int ibr = check_balanced(root->right());
+        if(ibr == -2)
+            return -2;
+        if(abs(ibr-ibl) > 1)
+            return -2;
+        if(ibr > ibl)
+            return ibr+1;
+        else
+            return  ibl+1;
+    }
+}
+
+
+/**
+    * return the depth of the tree if the tree is balanced.
+    * Return -2 if not.
+    */
+template <class T>
+int  binary_search_tree<T>::is_balanced() {
+    return check_balanced(root);
+}
+
+template <class T>
+std::ostream &operator<<(std::ostream &out, const binary_tree_node<T> *root) {
+    if(root != NULL) {
+        out << "[";
+        out << root->left() << " ";
+        out << root->data();
+        out << " " << root->right();
+        out << "]";
+    }
+    return out;
+}
+
+
+
+template <class T>
+std::ostream &operator<<(std::ostream &out, const binary_search_tree<T> &tree) {
+    out << tree.root;
+    return out;
+}
+
+template <class Item>
+bool bst_remove(binary_tree_node<Item>*& root_ptr, const Item& target) {
+    //std::cout << "bst_remove A " << target << std::endl;
+    if(root_ptr == NULL)
+        return false;
+    else if(target < root_ptr->data()) {
+        //std::cout << "bst_remove B " << target << std::endl;
+        return bst_remove(root_ptr->left(), target);
+    }
+    else if(root_ptr->data() < target) {
+        //std::cout << "bst_remove C " << target << std::endl;
+        return bst_remove(root_ptr->right(), target);
+    }
+    else if(root_ptr->left() != NULL) {
+        //std::cout << "bst_remove D " << target << std::endl;
+        bst_remove_max(root_ptr->left(), root_ptr->data());
+        return true;
+    } else {
+        //std::cout << "bst_remove E " << target << std::endl;
+        binary_tree_node<Item> *old = root_ptr;
+        root_ptr = root_ptr->right();
+        delete old;
+        return true;
+    }
+
+}
+
+template <class Item>
+void bst_remove_max(binary_tree_node<Item>*& root_ptr, Item& removed) {
+    if(root_ptr->right() == NULL) {
+        removed = root_ptr->data();
+        binary_tree_node<Item> *old = root_ptr;
+        root_ptr = root_ptr->left();
+        delete old;
+    } else {
+        bst_remove_max(root_ptr->right(), removed);
+    }
+}
+
+template <class T>
+bool binary_search_tree<T>::remove(const T &item) {
+    return bst_remove(root, item);
+}
+
+

@@ -1,0 +1,152 @@
+
+/*
+    File: table_q.template
+    Author: Noah Gardner
+    Date: 4/23/2020
+    Description: 
+        The purpose of this file is to implement
+        the functions defined in table_q.h for a 
+        hashing table with quadratic probing.
+        
+        insert, find index, and next index
+        are edited from the original program.
+
+*/
+
+#include <cassert>  // Provides assert
+#include <cstdlib>  // Provides size_t
+
+namespace main_savitch_12A
+{
+    template <class RecordType>
+    const std::size_t table_q<RecordType>::CAPACITY; 
+
+    template <class RecordType>
+    const int table_q<RecordType>::NEVER_USED;
+
+    template <class RecordType>
+    const int table_q<RecordType>::PREVIOUSLY_USED;
+
+    template <class RecordType>
+    table_q<RecordType>::table_q( )
+    {
+        // for quadratic table_q, capacity must be a power of two
+        assert(ceil(log2(CAPACITY)) == floor(log2(CAPACITY)));
+        std::size_t i;
+
+        used = 0;
+        for (i = 0; i < CAPACITY; ++i)
+            data[i].key = NEVER_USED;  // Indicates a spot that's never been used.
+    }
+
+    template <class RecordType>
+    void table_q<RecordType>::insert(const RecordType& entry)
+    // Library facilities used: cassert
+    {
+        bool already_present;   // True if entry.key is already in the table_q
+        std::size_t index;        // data[index] is location for the new entry
+
+        assert(entry.key >= 0);
+
+        // Set index so that data[index] is the spot to place the new entry.
+        find_index(entry.key, already_present, index);
+
+        // If the key wasn't already there, then find the location for the new entry.
+        if (!already_present)
+        {
+            assert(size( ) < CAPACITY);
+            index = hash(entry.key);
+            int count = 0;
+            while (!is_vacant(index))
+                index = next_index(count, index);
+                ++count;
+            ++used;
+        }
+
+        data[index] = entry;
+    }
+
+    template <class RecordType>
+    void table_q<RecordType>::remove(int key)
+    // Library facilities used: cassert
+    {
+        bool found;        // True if key occurs somewhere in the table_q
+        std::size_t index;   // Spot where data[index].key == key
+
+        assert(key >= 0);
+
+        find_index(key, found, index);
+        if (found)
+        {   // The key was found, so remove this record and reduce used by 1.
+            data[index].key = PREVIOUSLY_USED; // Indicates a spot that's no longer in use.
+            --used;
+        }
+    }
+
+    template <class RecordType>
+    bool table_q<RecordType>::is_present(int key) const
+    // Library facilities used: assert.h
+    {
+        bool found;
+        std::size_t index;
+
+        assert(key >= 0);
+
+        find_index(key, found, index);
+        return found;
+    }
+
+    template <class RecordType>
+    void table_q<RecordType>::find(int key, bool& found, RecordType& result) const
+    // Library facilities used: cassert.h
+    {
+        std::size_t index;
+
+        assert(key >= 0);
+
+        find_index(key, found, index);
+        if (found)
+            result = data[index];
+    }
+
+    template <class RecordType>
+    inline std::size_t table_q<RecordType>::hash(int key) const
+    {
+        return (key % CAPACITY);
+    }
+
+    template <class RecordType>
+    inline std::size_t table_q<RecordType>::next_index(int count, std::size_t index) const
+    // Library facilities used: cstdlib
+    {
+        return ((index + count) % CAPACITY);
+    }
+
+    template <class RecordType>
+    void table_q<RecordType>::find_index(int key, bool& found, std::size_t& i) const
+    // Library facilities used: cstdlib
+    {
+	std::size_t count; // Number of entries that have been examined
+
+	count = 0;
+	i = hash(key);
+	while((count < CAPACITY) && (data[i].key != NEVER_USED) && (data[i].key != key))
+	{
+        i = next_index(count, i);
+	    ++count;
+	}
+	found = (data[i].key == key);
+    }
+
+    template <class RecordType>
+    inline bool table_q<RecordType>::never_used(std::size_t index) const
+    {
+	return (data[index].key == NEVER_USED);
+    }
+
+    template <class RecordType>
+    inline bool table_q<RecordType>::is_vacant(std::size_t index) const
+    {
+	return (data[index].key == NEVER_USED) || (data[index].key == PREVIOUSLY_USED);
+    }
+}

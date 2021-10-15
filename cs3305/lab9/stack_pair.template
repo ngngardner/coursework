@@ -1,0 +1,125 @@
+#include <iostream>
+#include <cassert>
+#include "stack_pair.h"
+using namespace std;
+
+
+template<class T>
+stack_pair<T>::stack_pair()
+{
+    top_a = 0;
+    top_b = CAPACITY - 1;
+}
+
+template<class T>
+T stack_pair<T>::pop_a()
+{
+    assert(!is_empty_a());
+
+    T val = data[top_a-1];
+    top_a--;
+    return val;
+}
+
+template<class T>
+T stack_pair<T>::pop_b()
+{
+    assert(!is_empty_b());
+
+    T val = data[top_b+1];
+    top_b++;
+    return val;
+}
+
+template<class T>
+void stack_pair<T>::push_a(T item)
+{
+    if(is_full_a())
+    {
+        cout<<"Error: A is full. " << "\n";
+    }
+    else
+    {
+        data[top_a] = item;
+        top_a++;
+    }
+}
+
+template<class T>
+void stack_pair<T>::push_b(T item)
+{
+    if(is_full_b())
+    {
+        cout<<"Error: B is full. " << "\n";
+    }
+    else
+    {
+        data[top_b] = item;
+        top_b--;
+    }
+}
+
+template<class T>
+typename stack_pair<T>::size_type stack_pair<T>::size_a() const
+{
+    return top_a;
+}
+
+template<class T>
+typename stack_pair<T>::size_type stack_pair<T>::size_b() const
+{
+    return (CAPACITY-1)-top_b;
+}
+
+template<class T>
+bool stack_pair<T>::is_empty_a() const
+{
+    return (top_a == 0);
+}
+
+template<class T>
+bool stack_pair<T>::is_empty_b() const
+{
+    return (top_b == CAPACITY-1);
+}
+
+template<class T>
+bool stack_pair<T>::is_full_a() const
+{
+    return (top_a > top_b);
+}
+
+template<class T>
+bool stack_pair<T>::is_full_b() const
+{
+    return (top_b < top_a);
+}
+
+template<class T>
+void stack_pair<T>::print_stack_pair() const
+{
+    if(is_empty_a())
+    {
+        cout<<"A is Empty.";
+    }
+    else
+    {
+        for(size_type a_stack_end=0; a_stack_end<top_a; a_stack_end++)
+        {
+            cout << data[a_stack_end] << " ";
+        }
+    }
+    cout<<" | ";
+    if(is_empty_b())
+    {
+        cout<<"B is Empty.";
+    }
+    else
+    {
+        for(size_type b_stack_end=CAPACITY-1; b_stack_end>top_b; b_stack_end--)
+        {
+            cout << data[b_stack_end] << " ";
+        }
+    }
+    cout << "\n";
+}
