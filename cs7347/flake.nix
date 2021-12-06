@@ -37,6 +37,7 @@
                 latexmk
                 latexindent
 
+                placeins
                 adjustbox
                 collectbox
                 ;
