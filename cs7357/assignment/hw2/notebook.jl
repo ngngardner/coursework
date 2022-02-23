@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.7
+# v0.18.1
 
 using Markdown
 using InteractiveUtils
@@ -7,7 +7,6 @@ using InteractiveUtils
 # ╔═╡ 5cfa3d4e-0f88-459e-a1ef-6a0e2f4aebd3
 begin
 	using DataFrames
-
 	using Latexify
 end
 
@@ -30,6 +29,9 @@ begin
 	)
 end
 
+# ╔═╡ b57bb898-4780-44ec-9ce2-6f8f28aecfea
+log_likelihood = sum(log_odds)
+
 # ╔═╡ a7c2609f-2a92-4880-8c2e-dca3d245d99b
 latexify(df, env=:table)
 
@@ -38,10 +40,18 @@ md"""
 # Question 4
 """
 
+# ╔═╡ b031759a-1864-4281-bd64-4398ac169e82
+function logit2prob(logit)
+	odds = exp(logit)
+	return odds / (1 + odds)
+end
+
 # ╔═╡ 571103f1-f5ab-44d5-bc2f-a8e68563499b
 begin
 	logits = [3.5, 6.1, -2.9, -1.2]
 	classes = ["bus", "truck", "car", "van"]
+	probs = [logit2prob(logit) for logit in logits]
+	string(map(v -> round(v, digits=digits), probs))
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -59,7 +69,7 @@ Latexify = "~0.15.12"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.1"
+julia_version = "1.7.2"
 manifest_format = "2.0"
 
 [[deps.ArgTools]]
@@ -341,8 +351,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═5cfa3d4e-0f88-459e-a1ef-6a0e2f4aebd3
 # ╟─53107dc2-e03c-4a02-9fec-be04d7eed18b
 # ╠═5ae74f32-9428-11ec-3617-c9624a3a9643
+# ╠═b57bb898-4780-44ec-9ce2-6f8f28aecfea
 # ╠═a7c2609f-2a92-4880-8c2e-dca3d245d99b
-# ╠═2746bcc7-6de4-4906-84c6-1975518bd6de
+# ╟─2746bcc7-6de4-4906-84c6-1975518bd6de
+# ╠═b031759a-1864-4281-bd64-4398ac169e82
 # ╠═571103f1-f5ab-44d5-bc2f-a8e68563499b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
