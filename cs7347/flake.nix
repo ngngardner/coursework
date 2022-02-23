@@ -36,6 +36,10 @@
                 scheme-small
                 latexmk
                 latexindent
+
+                placeins
+                adjustbox
+                collectbox
                 ;
             })
           ];
