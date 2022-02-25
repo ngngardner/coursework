@@ -2,3 +2,8 @@
 !.gitignore
 !*.tex
 !*.pdf
+
+# assets
+!assets
+!assets/*
+!assets/**/*.png

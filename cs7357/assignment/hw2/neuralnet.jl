@@ -70,19 +70,13 @@ function train(m, train_x, train_y, test_x, test_y)
 
 	train_history = []
 	test_history = []
-	for epoch in 1:EPOCHS
-		@info "Epoch $epoch"
-
-		for (x, y) in train_loader
-			gs = Flux.gradient(() -> loss(x,y), ps)
-			Flux.update!(opt, ps, gs)
-		end
-
-		if epoch % 5 == 0
+	
+	@epochs 100 Flux.train!(loss, ps, train_loader, opt, 
+		cb = throttle(() -> begin
 			push!(train_history, categorical_accuracy(m(train_x), train_y))
 			push!(test_history, categorical_accuracy(m(test_x), test_y))
-		end
-	end
+		end, 5)
+	)
 	return m, train_history, test_history
 end
 
@@ -91,9 +85,6 @@ model3, trainm3, testm3 = train(m3, train_x, train_y, test_x, test_y)
 
 # ╔═╡ 88b6b633-25b0-41ba-8b4f-2fb3ac613c72
 model4, trainm4, testm4 = train(m4, train_x, train_y, test_x, test_y)
-
-# ╔═╡ 50ef87b1-57b8-4066-9df9-58bdbecf3900
-
 
 # ╔═╡ 3cc349c4-8113-4495-b814-fc332fb42646
 categorical_accuracy(model3(test_x), test_y)
@@ -1500,7 +1491,6 @@ version = "0.9.1+5"
 # ╠═5e63ef3e-22a8-4b72-941f-80698b7fad1c
 # ╠═21101920-8d33-411f-8e58-767d6ccb95ae
 # ╠═88b6b633-25b0-41ba-8b4f-2fb3ac613c72
-# ╠═50ef87b1-57b8-4066-9df9-58bdbecf3900
 # ╠═3cc349c4-8113-4495-b814-fc332fb42646
 # ╠═74c3966c-5309-4058-a9dd-d37eeaffa0b3
 # ╟─0605add6-e65b-45d7-86ab-99cf1ee7e90b
