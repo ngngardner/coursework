@@ -1,0 +1,150 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{esvect}
+\usepackage{float}
+\usepackage{graphicx}
+
+\begin{document}
+CS7357 HW3, Noah Gardner, 000843905\newline
+
+\section{Assignment 3}
+\begin{enumerate}
+      \item \textbf{[Points 5]} Write down the differences between feed-forward
+            neural networks and convolutional neural networks.
+
+            \textbf{Answer:}
+
+            In a standard feed-forward neural network, the inputs are each
+            multiplied by a weight matrix, and then the result is added to a
+            bias vector. When we want to work with images or other types of data
+            where the location of features is important, a feed-forward neural
+            network is insufficient. A convolutional neural network applies a
+            convolution operation to the input data and adds a bias vector. By
+            applying convolution, we can preserve spatial structure.
+            Additionally, the output of a convolution may be convolved further
+            to learn deeper representations of spatial features (e.g. edges
+            build up to shapes).
+
+      \item \textbf{[Points 95]} Suppose you are classifying cars, buses, and
+            trucks images of shape 32x32, using a convolutional neural network
+            and each image has three channels. Your convolutional neural network
+            contains three convolutional layers, one fully connected layer, and
+            then a SoftMax classifier. Your fully connected layer has 24
+            neurons. You are designing such convolutional layers so that you can
+            get better performances. Your filter size for these layers can be
+            any size between 1x1 to 7x7. You also apply the max-pooling layer
+            after the second and third convolutional layer of any size between
+            2x2 to 5x5 that fits with your architecture. You are free to choose
+            any number of filters (between 16 to 128) for each convolutional
+            layer as well.
+            \begin{enumerate}
+                  \item Draw this convolutional neural network diagram with
+                        details parameters. \textbf{Note: Show the configuration
+                              or dimensions of each layer as you see in the lecture
+                              slides}. \textbf{[Points 10]}
+
+                        \textbf{Answer:}
+                        \begin{table}[h]
+                              \centering
+                              \begin{tabular}{|ccc|}
+                                    \hline
+                                    \textbf{Layer}  & \textbf{Attributes} & \textbf{Output Shape} \\
+                                    \hline
+                                    Input           & 32x32x3             & 32x32x3               \\
+                                    \hline
+                                    Convolution 1   & 3x3, 32 filters     & 30x30x32              \\
+                                    \hline
+                                    Convolution 2   & 5x5, 16 filters     & 26x26x16              \\
+                                    \hline
+                                    Max Pool        & 2x2, stride 2       & 13x13x16              \\
+                                    \hline
+                                    Convolution 3   & 3x3, 16 filters     & 11x11x16              \\
+                                    \hline
+                                    Max Pool        & 2x2, stride 2       & 5x5x16                \\
+                                    \hline
+                                    Fully Connected & 24 neurons          & 24x1                  \\
+                                    \hline
+                                    SoftMax         & 3 neurons           & 3x1                   \\
+                                    \hline
+                              \end{tabular}
+                        \end{table}
+                  \item Compute the number of parameters in each layer and
+                        showcase the total number of parameters of your network.
+                        Compute the number of parameters, for both with and
+                        without bias in each layer. \textbf{[Points 20]}
+
+                        \textbf{Answer:}
+                        \begin{table}[h]
+                              \centering
+                              \begin{tabular}{|ccc|}
+                                    \hline
+                                    \textbf{Layer}  & \textbf{With Bias} & \textbf{Without Bias} \\
+                                    \hline
+                                    Convolution 1   & 896                & 864                   \\
+                                    \hline
+                                    Convolution 2   & 12816              & 12800                 \\
+                                    \hline
+                                    Max Pool        & 0                  & 0                     \\
+                                    \hline
+                                    Convolution 3   & 2320               & 2304                  \\
+                                    \hline
+                                    Max Pool        & 0                  & 0                     \\
+                                    \hline
+                                    Fully Connected & 9624               & 9600                  \\
+                                    \hline
+                                    SoftMax         & 75                 & 72                    \\
+                                    \hline
+                                    Total           & 25731              & 25640                 \\
+                                    \hline
+                              \end{tabular}
+                        \end{table}
+                  \item Is it possible to reduce the total number of parameters
+                        by following adding additional filters (any size of 1x1
+                        to 7x7)? Please show your detailed calculation to
+                        showcase the lower number of parameters of such a CNN
+                        network. Also, draw the overall diagram with each layer
+                        dimension of your reduced parameter-based CNN network.
+                        \textbf{Note that you need to add additional filters to
+                              reduce the number of parameters of your initial CNN
+                              model. You cannot increase the size of the filter and/or
+                              change (decrease) the number of filters to reduce the
+                              total number of parameters. See the lecture slides to
+                              get an idea}. \textbf{[Points 30]}
+
+                        \textbf{Answer:}
+                        \begin{table}[h]
+                              \centering
+                              \begin{tabular}{|ccc|}
+                                    \hline
+                                    \textbf{Layer}  & \textbf{With Bias} & \textbf{Without Bias} \\
+                                    \hline
+                                    Convolution 1   & 896                & 864                   \\
+                                    \hline
+                                    Convolution 2   & 528                & 512                   \\
+                                    \hline
+                                    Max Pool        & 0                  & 0                     \\
+                                    \hline
+                                    Convolution 3   & 6416               & 2304                  \\
+                                    \hline
+                                    Max Pool        & 0                  & 0                     \\
+                                    \hline
+                                    Fully Connected & 9624               & 9600                  \\
+                                    \hline
+                                    SoftMax         & 75                 & 72                    \\
+                                    \hline
+                                    Total           & 25731              & 25640                 \\
+                                    \hline
+                              \end{tabular}
+                        \end{table}
+                  \item Compute the total number of convolutional operations for
+                        each layer of your both networks (a) and (c). Assume
+                        each pooling operations cost is 1. Show the total
+                        computational cost of your networks. \textbf{Note: show
+                              each layer’s computation separately to be considered
+                              partial grading in case of wrong calculations}.
+                        \textbf{[Points 35]}
+            \end{enumerate}
+\end{enumerate}
+\end{document}

@@ -2,23 +2,19 @@
 name = "cs7357"
 version = "0.1.0"
 description = ""
-authors = ["Noah Gardner <ngngardner@gmail.com>"]
+authors = ["ngngardner <ngngardner@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9,<3.11"
-ipykernel = "^6.7.0"
-jupyter = "^1.0.0"
-
-numpy = "^1.22.1"
-pandas = "^1.4.0"
-scikit-learn = "^1.0.2"
-matplotlib = "^3.5.1"
+python = ">=3.10,<3.11"
+torch = "^1.11.0"
+numpy = "^1.22.3"
+pandas = "^1.4.1"
+keras = "^2.8.0"
 tensorflow = "^2.8.0"
 
 [tool.poetry.dev-dependencies]
-wemake-python-styleguide = "^0.16.0"
 flake8 = "^4.0.1"
-autopep8 = "^1.6.0"
+wemake-python-styleguide = "^0.16.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
